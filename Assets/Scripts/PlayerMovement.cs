@@ -29,9 +29,20 @@ public class PlayerMovement : MonoBehaviour {
     public float TurnInput { get; set; }
     public bool JumpInput { get; set; }
 
+    public float dashDistance = 5f;
+
+    private Camera _camera;
+
     private void Awake() {
         rigidbody = GetComponent<Rigidbody>();
         capsuleCollider = GetComponent<CapsuleCollider>();
+        _camera = Camera.main;
+    }
+
+    private void Update() {
+        var cameraRay = _camera.ScreenPointToRay(Input.mousePosition);
+        var pointToLookAt = cameraRay.GetPoint(10f);
+        transform.LookAt(new Vector3(pointToLookAt.x, transform.position.y, pointToLookAt.z));
     }
 
     private void FixedUpdate() {
@@ -46,10 +57,10 @@ public class PlayerMovement : MonoBehaviour {
             var isometricDirection = Matrix4x4.Rotate(Quaternion.Euler(0, 45, 0)).MultiplyPoint3x4(direction);
 
             if (direction.magnitude >= 0.1f) {
-                var targetAngle = Mathf.Atan2(isometricDirection.x, isometricDirection.z) * Mathf.Rad2Deg;
-                var angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSpeed,
-                    0.1f);
-                transform.rotation = Quaternion.Euler(0f, angle, 0f);
+                // var targetAngle = Mathf.Atan2(isometricDirection.x, isometricDirection.z) * Mathf.Rad2Deg;
+                // var angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSpeed,
+                //     0.1f);
+                // transform.rotation = Quaternion.Euler(0f, angle, 0f);
 
                 rigidbody.velocity = (isometricDirection * moveSpeed /* * Time.deltaTime*/);
             }

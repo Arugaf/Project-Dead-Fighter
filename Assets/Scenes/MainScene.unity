@@ -1883,6 +1883,7 @@ MonoBehaviour:
   turnSpeed: 10
   allowJump: 0
   jumpSpeed: 4
+  dashDistance: 1
 --- !u!114 &217305706
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16175,6 +16176,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: wall_broken
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 71e438e2724ed114282ef9626c4d5ba6, type: 3}
+      propertyPath: m_NavMeshLayer
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 71e438e2724ed114282ef9626c4d5ba6, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 71e438e2724ed114282ef9626c4d5ba6, type: 3}
 --- !u!1001 &1850192662
@@ -18212,13 +18221,17 @@ PrefabInstance:
       propertyPath: toFollow
       value: 
       objectReference: {fileID: 217305704}
+    - target: {fileID: 662238855337421478, guid: de8d18ef94d3cde45943ece44f6ce768, type: 3}
+      propertyPath: viewDistance
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 662238855337421479, guid: de8d18ef94d3cde45943ece44f6ce768, type: 3}
       propertyPath: m_RootOrder
       value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 662238855337421479, guid: de8d18ef94d3cde45943ece44f6ce768, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1.55
+      value: 2.46
       objectReference: {fileID: 0}
     - target: {fileID: 662238855337421479, guid: de8d18ef94d3cde45943ece44f6ce768, type: 3}
       propertyPath: m_LocalPosition.y
@@ -18226,7 +18239,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 662238855337421479, guid: de8d18ef94d3cde45943ece44f6ce768, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -4.9
+      value: -12.4
       objectReference: {fileID: 0}
     - target: {fileID: 662238855337421479, guid: de8d18ef94d3cde45943ece44f6ce768, type: 3}
       propertyPath: m_LocalRotation.w
@@ -18258,11 +18271,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1424496638269771963, guid: de8d18ef94d3cde45943ece44f6ce768, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1424496638269771963, guid: de8d18ef94d3cde45943ece44f6ce768, type: 3}
       propertyPath: destination
       value: 
       objectReference: {fileID: 217305704}
+    - target: {fileID: 1424496638269771963, guid: de8d18ef94d3cde45943ece44f6ce768, type: 3}
+      propertyPath: viewDistance
+      value: 10
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: de8d18ef94d3cde45943ece44f6ce768, type: 3}
