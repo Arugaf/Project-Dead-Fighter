@@ -8,26 +8,64 @@ public class Projectile : MonoBehaviour {
     public float rotationSpeed = 1f;
 
     public int damage = 25;
+    public float destroyTime = 10f;
 
     private Vector3 _direction;
 
-    void Start() {
+    private Rigidbody _rigidbody;
+
+    public bool freezeY = true;
+    
+    public void Launch() {
+        enabled = true;
+            
         _direction = transform.forward * speed;
-        Destroy(gameObject, 5f);
+        _rigidbody = GetComponent<Rigidbody>();
+        _rigidbody.constraints = RigidbodyConstraints.FreezePositionY;
+
+        _rigidbody.velocity = _direction;
+
+        Invoke(nameof(Annihilate), destroyTime);
+    }
+
+    void Annihilate() {
+        Destroy(gameObject);
     }
 
     void Update() {
-        transform.Translate(_direction * Time.deltaTime, Space.World);
         transform.Rotate(rotationSpeed * Time.deltaTime, 0, 0);
     }
 
-    private void OnTriggerEnter(Collider other) {
-        var receiver = other.GetComponent<HpManager>();
-        if (receiver) {
-            receiver.Hit(damage);
-            Destroy(gameObject);
-        }
+    private void OnCollisionEnter(Collision collision) {
+        if (enabled) {
+            if (collision.gameObject.GetComponent<Projectile>()) {
+                enabled = false;
+                _rigidbody.constraints = RigidbodyConstraints.None;
+                return;
+            }
+            
+            if (!freezeY) {
+                _rigidbody.constraints = RigidbodyConstraints.None;
+            }
+            else {
+                _rigidbody.constraints = RigidbodyConstraints.FreezeAll;
+            }
 
-        this.enabled = false;
+            var receiver = collision.gameObject.GetComponent<HpManager>();
+            if (receiver) {
+                receiver.Hit(damage);
+                Destroy(gameObject);
+            }
+
+            enabled = false;
+        }
+        else {
+            var receiver = collision.gameObject.GetComponent<PlayerShooter>();
+
+            if (receiver && receiver.addToInventory(gameObject)) {
+                gameObject.SetActive(false);
+                CancelInvoke(nameof(Annihilate));
+            }
+        }
     }
 }
