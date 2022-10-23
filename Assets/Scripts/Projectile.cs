@@ -10,8 +10,9 @@ public class Projectile : MonoBehaviour {
 
     void Start() {
         _direction = transform.forward * speed;
+        Destroy(gameObject, 5f);
     }
-    
+
     void Update() {
         transform.Translate(_direction * Time.deltaTime, Space.World);
         transform.Rotate(rotationSpeed * Time.deltaTime, 0, 0);

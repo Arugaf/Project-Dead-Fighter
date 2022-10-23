@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,16 +6,13 @@ using UnityEngine;
 public class PlayerShooter : MonoBehaviour {
     public GameObject objectToShoot;
 
-    public Transform spawnPoint;
-
     public float cdTime = 1f;
     private bool _cooldown = false;
 
-    float AngleAboutY(Transform obj) {
-        Vector3 objFwd = obj.forward;
-        float angle = Vector3.Angle(objFwd, Vector3.forward);
-        float sign = Mathf.Sign(Vector3.Cross(objFwd, Vector3.forward).y);
-        return angle * sign;
+    private Shooter _shooter;
+
+    private void Start() {
+        _shooter = GetComponent<Shooter>();
     }
 
     void Update() {
@@ -22,7 +20,7 @@ public class PlayerShooter : MonoBehaviour {
 
         _cooldown = true;
         Invoke(nameof(ResetCooldown), cdTime);
-        var projectile = Instantiate(objectToShoot, spawnPoint.position, transform.rotation);
+        _shooter.Shoot(objectToShoot);
     }
 
     void ResetCooldown() {

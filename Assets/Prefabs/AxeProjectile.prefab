@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2654846097239149613}
   - component: {fileID: -5165004219200264935}
+  - component: {fileID: 3081955245112172443}
   m_Layer: 0
   m_Name: AxeProjectile
   m_TagString: Untagged
@@ -46,6 +47,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 10
   rotationSpeed: 350
+--- !u!65 &3081955245112172443
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1665706369282655730}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 0.9117737, z: 0.38194406}
+  m_Center: {x: 0, y: -0.044113144, z: 0.08548254}
 --- !u!1001 &5417494825452765467
 PrefabInstance:
   m_ObjectHideFlags: 0
