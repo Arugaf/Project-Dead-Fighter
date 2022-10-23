@@ -98,6 +98,7 @@ MonoBehaviour:
   rotationSpeed: 1
   objectToShoot: {fileID: 5059037697449778894, guid: 235f36f6b7605ed449ccbff4b75c0b9c, type: 3}
   cdTime: 1
+  viewDistance: 10
 --- !u!114 &8437512563011842264
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -203,6 +204,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   agent: {fileID: 1225376646605666211}
   destination: {fileID: 0}
+  viewDistance: 10
+  distance: 0
+  colliderRadius: 0
 --- !u!1001 &662238855505625045
 PrefabInstance:
   m_ObjectHideFlags: 0
