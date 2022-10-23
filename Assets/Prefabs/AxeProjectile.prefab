@@ -47,6 +47,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 10
   rotationSpeed: 350
+  damage: 25
 --- !u!65 &3081955245112172443
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -58,8 +59,8 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1, y: 0.9117737, z: 0.38194406}
-  m_Center: {x: 0, y: -0.044113144, z: 0.08548254}
+  m_Size: {x: 0.1960581, y: 0.86752236, z: 0.38194406}
+  m_Center: {x: 0.0048047155, y: -0.037259474, z: 0.08548254}
 --- !u!1001 &5417494825452765467
 PrefabInstance:
   m_ObjectHideFlags: 0
