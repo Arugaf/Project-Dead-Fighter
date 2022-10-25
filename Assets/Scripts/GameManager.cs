@@ -27,6 +27,12 @@ public class GameManager : MonoBehaviour {
 
     public Menu menu;
 
+    private GameObject _ingameUI;
+
+    // bad
+    public int maxHp;
+    public int maxInventory;
+
     private void Awake() {
         if (instance) {
             Destroy(gameObject);
@@ -36,6 +42,8 @@ public class GameManager : MonoBehaviour {
         instance = this;
 
         DontDestroyOnLoad(gameObject);
+
+        LoadUI();
     }
 
     public void LoadScene(Scene scene) {
@@ -126,5 +134,34 @@ public class GameManager : MonoBehaviour {
         gameOver.SetText("You win!");
         CurrentGameStatus = GameStatus.NotStarted;
         LoadScene(Scene.GameOver);
+    }
+
+    public void LoadUI() {
+        _ingameUI = GameObject.Find("Ingame UI");
+
+        if (_ingameUI) {
+            Debug.Log("UI found");
+        }
+    }
+
+    public void SetHp(int hp) {
+        if (_ingameUI) {
+            var text = "HP: " + hp + "/" + maxHp;
+            _ingameUI.transform.Find("Hp").GetComponent<TextMeshProUGUI>().SetText(text);
+        }
+    }
+
+    public void SetInventory(int count) {
+        if (_ingameUI) {
+            var text = "Inv: " + count + "/" + maxInventory;
+            _ingameUI.transform.Find("Inventory").GetComponent<TextMeshProUGUI>().SetText(text);
+        }
+    }
+    
+    public void SetMobs(int count) {
+        if (_ingameUI) {
+            var text = "Mobs left: " + count;
+            _ingameUI.transform.Find("Mobs").GetComponent<TextMeshProUGUI>().SetText(text);
+        }
     }
 }
