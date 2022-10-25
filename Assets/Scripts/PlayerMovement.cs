@@ -43,7 +43,7 @@ public class PlayerMovement : MonoBehaviour {
 
         // var playerPositionOnPlane = _plane.ClosestPointOnPlane(transform.position);
         var lookAtPoint = new Vector3(hitPoint.x, transform.position.y, hitPoint.z);
-        transform.LookAt(lookAtPoint);
+        // transform.LookAt(lookAtPoint);
         Debug.DrawRay(transform.position, lookAtPoint, Color.green);
         Debug.DrawLine(new Vector3(transform.position.x, 1.06f, transform.position.z),
             new Vector3(hitPoint.x, 1.06f, hitPoint.z), Color.magenta);
@@ -55,13 +55,13 @@ public class PlayerMovement : MonoBehaviour {
         }
 
         // RaycastHit hit;
-        /*if (Physics.Raycast(cameraRay.origin, cameraRay.direction, out var hit, Mathf.Infinity)) {
+        if (Physics.Raycast(cameraRay.origin, cameraRay.direction, out var hit, Mathf.Infinity) && !hit.collider.CompareTag("Invisible Wall")) {
             transform.LookAt(new Vector3(hit.point.x, transform.position.y, hit.point.z));
             Debug.DrawRay(transform.position, new Vector3(hit.point.x, transform.position.y, hit.point.z), Color.yellow);
         }
         else {
             transform.LookAt(lookAtPoint);
-        }*/
+        }
 
 
         // transform.LookAt(new Vector3(pointToLookAt.x, transform.position.y, pointToLookAt.z));
