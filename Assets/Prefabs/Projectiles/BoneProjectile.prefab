@@ -49,7 +49,7 @@ MonoBehaviour:
   speed: 10
   rotationSpeed: 350
   damage: 25
-  destroyTime: 10
+  destroyTime: 7
   freezeY: 0
 --- !u!65 &8930010317957563559
 BoxCollider:

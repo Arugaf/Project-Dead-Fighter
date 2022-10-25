@@ -48,8 +48,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 10
   rotationSpeed: 350
-  damage: 25
-  destroyTime: 10
+  damage: 30
+  destroyTime: 5
   freezeY: 0
 --- !u!65 &8930010317957563559
 BoxCollider:
