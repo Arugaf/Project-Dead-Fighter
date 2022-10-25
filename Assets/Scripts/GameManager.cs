@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
@@ -50,7 +51,7 @@ public class GameManager : MonoBehaviour {
             }
             case Scene.GameOver: {
                 menu.canvas.gameObject.SetActive(true);
-                sceneName = "GameOverScene";
+                sceneName = "MenuScene";
                 break;
             }
             case Scene.MainMenu:
@@ -76,6 +77,8 @@ public class GameManager : MonoBehaviour {
                 break;
             default:
                 CurrentGameStatus = GameStatus.Active;
+                var gameOver = menu.canvas.transform.Find("Game Over").GetComponent<TextMeshProUGUI>();
+                gameOver.enabled = false;
                 break;
         }
     }
@@ -105,6 +108,9 @@ public class GameManager : MonoBehaviour {
     }
 
     public void OnPlayerDeath() {
+        var gameOver = menu.canvas.transform.Find("Game Over").GetComponent<TextMeshProUGUI>();
+        gameOver.enabled = true;
+        gameOver.SetText("You died...");
         CurrentGameStatus = GameStatus.NotStarted;
         LoadScene(Scene.GameOver);
         // Invoke(nameof(OnPlayerDeathInternal), 5f);
@@ -112,5 +118,13 @@ public class GameManager : MonoBehaviour {
 
     private void OnPlayerDeathInternal() {
         // LoadScene(Scene.GameOver);
+    }
+
+    public void OnWin() {
+        var gameOver = menu.canvas.transform.Find("Game Over").GetComponent<TextMeshProUGUI>();
+        gameOver.enabled = true;
+        gameOver.SetText("You win!");
+        CurrentGameStatus = GameStatus.NotStarted;
+        LoadScene(Scene.GameOver);
     }
 }

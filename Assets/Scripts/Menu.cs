@@ -8,6 +8,7 @@ public class Menu : MonoBehaviour {
     public static Menu instance;
     
     public Canvas canvas;
+    public Canvas about;
 
     public TextMeshProUGUI startButton;
 
@@ -75,5 +76,15 @@ public class Menu : MonoBehaviour {
 
     public void OnQuitClick() {
         Application.Quit();
+    }
+
+    public void OnAboutClick() {
+        about.gameObject.SetActive(true);
+        canvas.gameObject.SetActive(false);
+    }
+
+    public void OnBackClick() {
+        about.gameObject.SetActive(false);
+        canvas.gameObject.SetActive(true);
     }
 }
