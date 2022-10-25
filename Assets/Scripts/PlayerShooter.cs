@@ -15,9 +15,15 @@ public class PlayerShooter : MonoBehaviour {
 
     private Shooter _shooter;
 
+    private void Start() {
+        GameManager.instance.maxInventory = inventorySize;
+        GameManager.instance.SetInventory(inventorySize);
+    }
+
     public bool addToInventory(GameObject item) {
         if (inventory.Count < inventorySize) {
             inventory.Add(item);
+            GameManager.instance.SetInventory(inventory.Count);
             return true;
         }
 
@@ -31,13 +37,15 @@ public class PlayerShooter : MonoBehaviour {
     }
 
     void Update() {
-        if (!Input.GetMouseButton(0) && !Input.GetKey("r") || _cooldown || GameManager.instance.CurrentGameStatus == GameManager.GameStatus.Paused) return;
+        if (!Input.GetMouseButton(0) && !Input.GetKey("r") || _cooldown ||
+            GameManager.instance.CurrentGameStatus == GameManager.GameStatus.Paused) return;
 
         _cooldown = true;
         Invoke(nameof(ResetCooldown), cdTime);
         if (inventory.Count > 0) {
             _shooter.Shoot(inventory.Last());
             inventory.Remove(inventory.Last());
+            GameManager.instance.SetInventory(inventory.Count);
         }
     }
 
