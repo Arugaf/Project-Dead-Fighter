@@ -36,6 +36,7 @@ public class Menu : MonoBehaviour {
         }
         else if (GameManager.instance.CurrentGameStatus == GameManager.GameStatus.Paused) {
             canvas.gameObject.SetActive(false);
+            about.gameObject.SetActive(false);
             GameManager.instance.ResumeGame();
         }
     }
