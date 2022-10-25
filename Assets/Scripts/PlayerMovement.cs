@@ -17,6 +17,10 @@ public class PlayerMovement : MonoBehaviour {
 
     public float moveSpeed = 5f;
     public float moveSmooth = 0.2f;
+    public float dashPower = 100f;
+    public float dashCooldown = 3f;
+
+    private bool _dashCooldown = false;
 
     private Vector3 _currentVelocity = Vector3.zero;
 
@@ -43,6 +47,12 @@ public class PlayerMovement : MonoBehaviour {
         Debug.DrawRay(transform.position, lookAtPoint, Color.green);
         Debug.DrawLine(new Vector3(transform.position.x, 1.06f, transform.position.z),
             new Vector3(hitPoint.x, 1.06f, hitPoint.z), Color.magenta);
+        
+        if (Input.GetKeyDown("space") && !_dashCooldown) {
+            _dashCooldown = true;
+            rigidbody.AddForce(CalculateIsometricDirection() * moveSpeed * dashPower);
+            Invoke(nameof(resetDashCooldown), dashCooldown);
+        }
 
         // RaycastHit hit;
         /*if (Physics.Raycast(cameraRay.origin, cameraRay.direction, out var hit, Mathf.Infinity)) {
@@ -59,12 +69,12 @@ public class PlayerMovement : MonoBehaviour {
         // Debug.DrawRay(transform.position, new Vector3(pointToLookAt.x, transform.position.y, pointToLookAt.z), Color.cyan);
     }
 
-    private void FixedUpdate() {
-        var horizontal = Input.GetAxisRaw("Horizontal");
-        var vertical = Input.GetAxisRaw("Vertical");
+    private void resetDashCooldown() {
+        _dashCooldown = false;
+    }
 
-        var direction = new Vector3(horizontal, 0f, vertical).normalized;
-        var isometricDirection = Matrix4x4.Rotate(Quaternion.Euler(0, 45, 0)).MultiplyPoint3x4(direction).normalized;
+    private void FixedUpdate() {
+        var isometricDirection = CalculateIsometricDirection();
 
         // if (GameManager.instance.CurrentGameStatus != GameManager.GameStatus.NotStarted) {
         rigidbody.velocity = Vector3.SmoothDamp(rigidbody.velocity, isometricDirection * moveSpeed,
@@ -72,5 +82,13 @@ public class PlayerMovement : MonoBehaviour {
         // }
 
         followingCamera.position = transform.position;
+    }
+
+    private Vector3 CalculateIsometricDirection() {
+        var horizontal = Input.GetAxisRaw("Horizontal");
+        var vertical = Input.GetAxisRaw("Vertical");
+
+        var direction = new Vector3(horizontal, 0f, vertical).normalized;
+        return Matrix4x4.Rotate(Quaternion.Euler(0, 45, 0)).MultiplyPoint3x4(direction).normalized;
     }
 }
