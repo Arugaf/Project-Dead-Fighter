@@ -1,37 +1,26 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Numerics;
 using UnityEngine;
+using Matrix4x4 = UnityEngine.Matrix4x4;
+using Plane = UnityEngine.Plane;
+using Quaternion = UnityEngine.Quaternion;
+using Vector3 = UnityEngine.Vector3;
 
 public class PlayerMovement : MonoBehaviour {
     new private Rigidbody rigidbody;
     private CapsuleCollider capsuleCollider;
 
     public Transform followingCamera;
-
-    [Tooltip("Maximum slope the character can jump on")] [Range(5f, 60f)]
-    public float slopeLimit = 45f;
-
-    [Tooltip("Move speed in meters/second")]
-    public float moveSpeed = 5f;
-
-    [Tooltip("Turn speed in degrees/second, left (+) or right (-)")]
-    public float turnSpeed = 10f;
-
-    [Tooltip("Whether the character can jump")]
-    public bool allowJump = false;
-
-    [Tooltip("Upward speed to apply when jumping in meters/second")]
-    public float jumpSpeed = 4f;
-
-    public bool IsGrounded { get; private set; }
-    public float ForwardInput { get; set; }
-    public float TurnInput { get; set; }
-    public bool JumpInput { get; set; }
-
-    public float dashDistance = 5f;
-
     private Camera _camera;
+
+    public float moveSpeed = 5f;
+    public float moveSmooth = 0.2f;
+
+    private Vector3 _currentVelocity = Vector3.zero;
+
+    private Plane _plane = new Plane(Vector3.up, new Vector3(0.0f, 1.06f, 0.0f));
 
     private void Awake() {
         rigidbody = GetComponent<Rigidbody>();
@@ -41,85 +30,47 @@ public class PlayerMovement : MonoBehaviour {
 
     private void Update() {
         var cameraRay = _camera.ScreenPointToRay(Input.mousePosition);
-        var pointToLookAt = cameraRay.GetPoint(10f);
-        transform.LookAt(new Vector3(pointToLookAt.x, transform.position.y, pointToLookAt.z));
+        Debug.DrawRay(cameraRay.origin, cameraRay.direction * 100f, Color.red);
+
+        var distance = 0.0f;
+        _plane.Raycast(cameraRay, out distance);
+        var hitPoint = cameraRay.GetPoint(distance);
+        Debug.DrawRay(transform.position, hitPoint, Color.cyan);
+
+        // var playerPositionOnPlane = _plane.ClosestPointOnPlane(transform.position);
+        var lookAtPoint = new Vector3(hitPoint.x, transform.position.y, hitPoint.z);
+        transform.LookAt(lookAtPoint);
+        Debug.DrawRay(transform.position, lookAtPoint, Color.green);
+        Debug.DrawLine(new Vector3(transform.position.x, 1.06f, transform.position.z),
+            new Vector3(hitPoint.x, 1.06f, hitPoint.z), Color.magenta);
+
+        // RaycastHit hit;
+        /*if (Physics.Raycast(cameraRay.origin, cameraRay.direction, out var hit, Mathf.Infinity)) {
+            transform.LookAt(new Vector3(hit.point.x, transform.position.y, hit.point.z));
+            Debug.DrawRay(transform.position, new Vector3(hit.point.x, transform.position.y, hit.point.z), Color.yellow);
+        }
+        else {
+            transform.LookAt(lookAtPoint);
+        }*/
+
+
+        // transform.LookAt(new Vector3(pointToLookAt.x, transform.position.y, pointToLookAt.z));
+        // Debug.DrawLine(transform.position, new Vector3(pointToLookAt.x, transform.position.y, pointToLookAt.z), Color.green);
+        // Debug.DrawRay(transform.position, new Vector3(pointToLookAt.x, transform.position.y, pointToLookAt.z), Color.cyan);
     }
 
     private void FixedUpdate() {
-        CheckGrounded();
-        // ProcessActions();
+        var horizontal = Input.GetAxisRaw("Horizontal");
+        var vertical = Input.GetAxisRaw("Vertical");
 
-        if (IsGrounded) {
-            var horizontal = Input.GetAxisRaw("Horizontal");
-            var vertical = Input.GetAxisRaw("Vertical");
+        var direction = new Vector3(horizontal, 0f, vertical).normalized;
+        var isometricDirection = Matrix4x4.Rotate(Quaternion.Euler(0, 45, 0)).MultiplyPoint3x4(direction).normalized;
 
-            var direction = new Vector3(horizontal, 0f, vertical).normalized;
-            var isometricDirection = Matrix4x4.Rotate(Quaternion.Euler(0, 45, 0)).MultiplyPoint3x4(direction);
-
-            if (direction.magnitude >= 0.1f) {
-                // var targetAngle = Mathf.Atan2(isometricDirection.x, isometricDirection.z) * Mathf.Rad2Deg;
-                // var angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSpeed,
-                //     0.1f);
-                // transform.rotation = Quaternion.Euler(0f, angle, 0f);
-
-                rigidbody.velocity = (isometricDirection * moveSpeed /* * Time.deltaTime*/);
-            }
-        }
+        // if (GameManager.instance.CurrentGameStatus != GameManager.GameStatus.NotStarted) {
+        rigidbody.velocity = Vector3.SmoothDamp(rigidbody.velocity, isometricDirection * moveSpeed,
+            ref _currentVelocity, moveSmooth /* * Time.deltaTime*/);
+        // }
 
         followingCamera.position = transform.position;
-    }
-
-    /// <summary>
-    /// Checks whether the character is on the ground and updates <see cref="IsGrounded"/>
-    /// </summary>
-    private void CheckGrounded() {
-        IsGrounded = false;
-        float capsuleHeight = Mathf.Max(capsuleCollider.radius * 2f, capsuleCollider.height);
-        Vector3 capsuleBottom = transform.TransformPoint(capsuleCollider.center - Vector3.up * capsuleHeight / 2f);
-        float radius = transform.TransformVector(capsuleCollider.radius, 0f, 0f).magnitude;
-        Ray ray = new Ray(capsuleBottom + transform.up * .01f, -transform.up);
-        RaycastHit hit;
-        if (Physics.Raycast(ray, out hit, radius * 5f)) {
-            float normalAngle = Vector3.Angle(hit.normal, transform.up);
-            if (normalAngle < slopeLimit) {
-                float maxDist = radius / Mathf.Cos(Mathf.Deg2Rad * normalAngle) - radius + .02f;
-                if (hit.distance < maxDist)
-                    IsGrounded = true;
-            }
-        }
-    }
-
-    /// <summary>
-    /// Processes input actions and converts them into movement
-    /// </summary>
-    private void ProcessActions() {
-        // Process Turning
-        if (TurnInput != 0f) {
-            float angle = Mathf.Clamp(TurnInput, -1f, 1f) * turnSpeed;
-            transform.Rotate(Vector3.up, Time.fixedDeltaTime * angle);
-        }
-
-        // Process Movement/Jumping
-        if (IsGrounded) {
-            // Reset the velocity
-            rigidbody.velocity = Vector3.zero;
-            // Check if trying to jump
-            if (JumpInput && allowJump) {
-                // Apply an upward velocity to jump
-                rigidbody.velocity += Vector3.up * jumpSpeed;
-            }
-
-            // Apply a forward or backward velocity based on player input
-            rigidbody.velocity += transform.forward * Mathf.Clamp(ForwardInput, -1f, 1f) * moveSpeed;
-        }
-        else {
-            // Check if player is trying to change forward/backward movement while jumping/falling
-            if (!Mathf.Approximately(ForwardInput, 0f)) {
-                // Override just the forward velocity with player input at half speed
-                Vector3 verticalVelocity = Vector3.Project(rigidbody.velocity, Vector3.up);
-                rigidbody.velocity = verticalVelocity +
-                                     transform.forward * Mathf.Clamp(ForwardInput, -1f, 1f) * moveSpeed / 2f;
-            }
-        }
     }
 }

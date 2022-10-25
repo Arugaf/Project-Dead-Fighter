@@ -31,7 +31,7 @@ public class PlayerShooter : MonoBehaviour {
     }
 
     void Update() {
-        if (!Input.GetMouseButton(0) && !Input.GetKey("r") || _cooldown) return;
+        if (!Input.GetMouseButton(0) && !Input.GetKey("r") || _cooldown || GameManager.instance.CurrentGameStatus == GameManager.GameStatus.Paused) return;
 
         _cooldown = true;
         Invoke(nameof(ResetCooldown), cdTime);

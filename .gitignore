@@ -236,4 +236,7 @@ sysinfo.txt
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
 
+/Build*/
+/Assets/TextMesh Pro*
+
 # End of https://www.toptal.com/developers/gitignore/api/jetbrains,unity,rider
